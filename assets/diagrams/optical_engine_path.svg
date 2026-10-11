@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="510" viewBox="0 0 980 510" role="img" aria-label="光通訊 / 電光轉換路徑（概念圖）">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101c32"/><stop offset="1" stop-color="#172d46"/></linearGradient><linearGradient id="copper"><stop stop-color="#f5bd7d"/><stop offset=".55" stop-color="#b96b46"/><stop offset="1" stop-color="#f4ca86"/></linearGradient><linearGradient id="silicon"><stop stop-color="#9fc2fb"/><stop offset="1" stop-color="#4b6fbb"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="4"/></filter></defs>
+<rect width="980" height="510" fill="url(#bg)" rx="24"/><path d="M0 73H980" stroke="#263e59"/>
+<text x="42" y="40" font-size="21" font-weight="750" fill="#f0f6ff" font-family="Noto Sans TC,Arial,sans-serif">光通訊 / 電光轉換路徑（概念圖）</text>
+<text x="42" y="63" font-size="12" fill="#9db1ce" font-family="Noto Sans TC,Arial,sans-serif">重點：光源、Driver / TIA、耦光良率與電功耗；CPO 不等於 SFP</text>
+
+<g font-family="Noto Sans TC,Arial,sans-serif">
+<rect x="54" y="155" width="201" height="199" rx="16" fill="#2c5679" stroke="#7aa5da" stroke-width="2"/>
+<rect x="81" y="184" width="148" height="88" rx="10" fill="url(#silicon)"/>
+<text x="155" y="235" fill="#133552" font-size="24" font-weight="800" text-anchor="middle">ASIC</text>
+<text x="155" y="313" fill="#d5eafa" font-size="19" text-anchor="middle">電訊號</text>
+<path d="M255 249H345" stroke="#8bccfa" stroke-width="8" stroke-linecap="round"/>
+<path d="M326 236L345 249L326 262" stroke="#8bccfa" stroke-width="5" fill="none"/>
+<rect x="353" y="155" width="260" height="199" rx="17" fill="#303d66" stroke="#a2b8f1" stroke-width="2"/>
+<text x="484" y="194" fill="#e6e5ff" font-weight="750" font-size="20" text-anchor="middle">光收發引擎</text>
+<rect x="381" y="216" width="95" height="88" rx="9" fill="#b68fe7"/><text x="428" y="251" fill="#1c2143" font-size="14" font-weight="750" text-anchor="middle">Driver</text><text x="428" y="270" fill="#1c2143" font-size="15" text-anchor="middle">/ TIA</text>
+<rect x="494" y="216" width="94" height="88" rx="9" fill="#5aa4a7"/><text x="541" y="245" fill="#082e34" font-size="14" font-weight="750" text-anchor="middle">Laser</text><text x="541" y="265" fill="#082e34" font-size="14" text-anchor="middle">/ PD</text>
+<path d="M612 254H738" stroke="#6ce1dc" stroke-width="10" stroke-linecap="round"/><path d="M714 241L738 254L714 267" fill="none" stroke="#6ce1dc" stroke-width="6"/>
+<rect x="746" y="194" width="166" height="118" rx="60" fill="#1b4e69" stroke="#52c7c5" stroke-width="4"/>
+<path d="M761 246C790 219 837 286 895 251" fill="none" stroke="#8dffe8" stroke-width="6"/>
+<text x="829" y="341" text-anchor="middle" fill="#d6eff0" font-size="20">光纖 Fiber</text>
+<g fill="#aebed4" font-size="15"><text x="156" y="383" text-anchor="middle">交換晶片</text><text x="484" y="384" text-anchor="middle">電光轉換／光電轉換</text><text x="829" y="383" text-anchor="middle">高速互連</text></g>
+</g>
+<path d="M155 125H829" stroke="#507e9b" stroke-width="2" stroke-dasharray="7 7"/>
+<text x="54" y="107" fill="#8bdde7" font-family="Noto Sans TC,Arial,sans-serif" font-size="15">SFP / 光模組採可插拔方案；CPO 是將光引擎更接近交換晶片的封裝路線</text>
+
+<path d="M40 457H940" stroke="#2e465d"/>
+<text x="42" y="485" fill="#849cb7" font-size="12" font-family="Noto Sans TC,Arial,sans-serif">SECTOR RADAR  /  EDUCATIONAL SCHEMATIC  /  NOT TO SCALE</text>
+<text x="938" y="485" text-anchor="end" fill="#849cb7" font-size="12" font-family="Noto Sans TC,Arial,sans-serif">Designed by C</text></svg>

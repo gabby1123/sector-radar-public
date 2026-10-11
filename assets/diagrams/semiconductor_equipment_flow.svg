@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="510" viewBox="0 0 980 510" role="img" aria-label="半導體設備 / 製程與驗收路線圖">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101c32"/><stop offset="1" stop-color="#172f49"/></linearGradient><linearGradient id="module" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#537fb7"/><stop offset="1" stop-color="#224a72"/></linearGradient></defs>
+<rect width="980" height="510" rx="24" fill="url(#bg)"/><path d="M0 73H980" stroke="#294058"/>
+<g font-family="Noto Sans TC,Arial,sans-serif"><text x="42" y="40" font-size="21" font-weight="750" fill="#f0f6ff">半導體設備 / 製程與驗收路線圖</text><text x="42" y="63" font-size="12" fill="#9db1ce">前段晶圓製造與封裝後段設備不同；下圖只呈現簡化的製程順序</text>
+
+<text x="74" y="113" fill="#8ddbe7" font-size="15">晶圓投入 → 製程加工 → 量測／測試 → 封裝</text>
+<g fill="url(#module)" stroke="#789dc7" stroke-width="2">
+<rect x="57" y="155" width="194" height="190" rx="16"/>
+<rect x="283" y="155" width="194" height="190" rx="16"/>
+<rect x="509" y="155" width="194" height="190" rx="16"/>
+<rect x="735" y="155" width="194" height="190" rx="16"/></g>
+<g fill="#c3e2f8" font-weight="700" font-size="21" text-anchor="middle"><text x="154" y="301">薄膜 / 蝕刻</text><text x="380" y="301">清洗 / 濕製程</text><text x="606" y="301">量測 / 檢測</text><text x="832" y="301">先進封裝</text></g>
+<g fill="#86badd">
+<ellipse cx="154" cy="211" rx="58" ry="21"/><rect x="96" y="210" width="116" height="25"/><ellipse cx="154" cy="235" rx="58" ry="19"/>
+<rect x="350" y="205" width="61" height="48" rx="8"/><rect x="338" y="245" width="86" height="9" rx="4"/>
+<circle cx="606" cy="216" r="49" fill="#234967" stroke="#91d7e0" stroke-width="8"/><circle cx="606" cy="216" r="19" fill="#6bb5c4"/>
+<rect x="783" y="204" width="98" height="22" rx="4" fill="#6cb9b4"/><rect x="795" y="178" width="74" height="27" rx="5" fill="#a3c6fa"/>
+<rect x="783" y="226" width="98" height="17" rx="3" fill="#e4b07f"/></g>
+<g stroke="#81cceb" stroke-width="4"><path d="M253 250H276M479 250H502M705 250H728"/></g>
+<g fill="#81cceb"><path d="M265 241l12 9-12 9z"/><path d="M491 241l12 9-12 9z"/><path d="M717 241l12 9-12 9z"/></g>
+<g text-anchor="middle" fill="#9ab1cb" font-size="14"><text x="154" y="371">製程設備</text><text x="380" y="371">藥液與清洗設備</text><text x="606" y="371">量測、良率分析</text><text x="832" y="371">貼合、RDL、Bump</text></g>
+<text x="55" y="429" fill="#8ddbe7" font-size="15">研究重點：訂單／交機／驗收時點、耗材服務比重、設備稼動與折舊</text>
+
+<path d="M40 456H940" stroke="#2e465d"/><text x="42" y="486" font-size="12" fill="#849cb7">SECTOR RADAR / EDUCATIONAL SCHEMATIC / NOT TO SCALE</text><text x="938" y="486" text-anchor="end" font-size="12" fill="#849cb7">Designed by C</text></g></svg>
