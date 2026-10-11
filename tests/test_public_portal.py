@@ -7,7 +7,7 @@ from pathlib import Path
 from public_data import (
     PUBLIC_JSON_FILES, _read_public_json, load_public_snapshots,
     public_company_labels, public_company_record, public_sector_rows,
-    public_stock_rows,
+    public_stock_rows, public_memo_records,
 )
 
 
@@ -39,6 +39,12 @@ class PublicPortalTests(unittest.TestCase):
             "quarters": {"stocks": {"2368": {
                 "quarters": [{"period": "2026Q2", "eps": 3.2, "gross_margin": 22,
                               "internal_target_price": 200}],
+            }}},
+            "memos": {"companies": {"2368": {
+                "code": "2368", "name": "金像電",
+                "manual": {"thesis": "公開論點", "secret": "PRIVATE_NOTE"},
+                "deep": {"research_position": "公開提綱", "private_price_target": 999,
+                         "scenario_2027": {"framework": "情境假設"}}
             }}},
         }
         for key, filename in PUBLIC_JSON_FILES.items():
@@ -84,6 +90,13 @@ class PublicPortalTests(unittest.TestCase):
         self.assertNotIn("from fundamental_dashboard import", source)
         self.assertNotIn("import company_research", source)
         self.assertNotIn("read_text(encoding=", source.replace('diagram.read_text(encoding=', ''))
+
+    def test_memo_projection_excludes_private_fields(self):
+        records = public_memo_records(load_public_snapshots(self.root))
+        self.assertEqual(records["2368"]["manual"]["thesis"], "公開論點")
+        self.assertEqual(records["2368"]["deep"]["scenario_2027"]["framework"], "情境假設")
+        self.assertNotIn("PRIVATE_NOTE", repr(records))
+        self.assertNotIn("private_price_target", repr(records))
 
     def test_missing_public_snapshot_is_handled(self):
         (self.root / PUBLIC_JSON_FILES["quarters"]).unlink()

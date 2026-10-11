@@ -18,7 +18,7 @@ def assert_page(at, page):
 def main():
     at = AppTest.from_file(str(ROOT / "public_app.py"), default_timeout=60).run()
     assert_page(at, "🏠 總覽")
-    for page in ("🧭 產業導覽", "📡 產業輪動", "📚 公司基本面"):
+    for page in ("🧭 產業導覽", "📡 產業輪動", "📚 公司基本面", "📝 公司研究 Memo"):
         keyed(at, "radio", "public_page").set_value(page).run()
         assert_page(at, page)
     company = keyed(at, "selectbox", "public_company")
@@ -29,7 +29,10 @@ def main():
     keyed(at, "radio", "public_page").set_value("🧭 產業導覽").run()
     keyed(at, "selectbox", "public_sector").set_value("pcb").run()
     assert_page(at, "🧭 產業導覽")
-    print("Public Sector Radar: all four pages, company and industry navigation passed")
+    keyed(at, "radio", "public_page").set_value("📝 公司研究 Memo").run()
+    keyed(at, "selectbox", "public_memo_company").set_value("2368").run()
+    assert_page(at, "📝 公司研究 Memo")
+    print("Public Sector Radar: all five pages, company and industry navigation passed")
 
 
 if __name__ == "__main__":

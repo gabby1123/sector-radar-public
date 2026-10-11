@@ -1,7 +1,8 @@
 """Strictly allowlisted public-data adapter for Sector Radar.
 
-Never import/read research_notes, deep_dive_notes, explorer_company_notes,
-forum memos, secrets, or internal workspaces here. All fields exposed to the
+Never import/read raw research_notes, deep_dive_notes, explorer_company_notes,
+forum memos, secrets, or internal workspaces here. Only pre-reviewed
+projections in data/public_memos.json are eligible for public display. All fields exposed to the
 public entrypoint are individually selected, never passed through wholesale.
 """
 import json
@@ -14,6 +15,7 @@ PUBLIC_JSON_FILES = {
     "profiles": "data/company_profiles.json",  # TWSE / TPEx issuer disclosures
     "revenue": "data/company_revenue.json",  # MOPS monthly disclosures
     "quarters": "data/quarterly_financials.json",  # Reported FinMind quarterly history
+    "memos": "data/public_memos.json",  # Independently exported, field-projected public summaries
 }
 EXTRA_RESEARCH_CODES = {"6456": "GIS-KY", "7873": "瑞峰半導體"}
 
@@ -129,3 +131,43 @@ def public_company_record(snapshots, code):
         "quarter_updated": q.get("last_success_at"),
         "quarters": sorted(allowed_quarters, key=lambda item: item["period"])[-8:],
     }
+
+
+def public_memo_records(snapshots):
+    """Published research abstracts only; never disclose raw private records."""
+    raw = snapshots.get("memos", {})
+    source = raw.get("companies", {}) if isinstance(raw, dict) else {}
+    if not isinstance(source, dict):
+        return {}
+    allowed = public_company_labels(snapshots)
+    text_fields = ("business", "thesis", "catalyst", "risk", "confidence")
+    deep_fields = ("research_position", "earnings_engine", "key_metric_focus",
+                   "potential_bottleneck", "bear_case", "source_qualification",
+                   "prepared_on")
+    result = {}
+    for code, item in source.items():
+        if code not in allowed or not isinstance(item, dict):
+            continue
+        manual = item.get("manual")
+        deep = item.get("deep")
+        if not isinstance(manual, dict) and not isinstance(deep, dict):
+            continue
+        m = ({**{field: str(manual.get(field) or "") for field in text_fields},
+              "questions": [str(v) for v in manual.get("questions", []) if isinstance(v, str)][:8]}
+             if isinstance(manual, dict) else None)
+        d = None
+        if isinstance(deep, dict):
+            scenario = deep.get("scenario_2027") or {}
+            d = {
+                **{field: str(deep.get(field) or "") for field in deep_fields},
+                "verification": [str(v) for v in deep.get("verification", [])
+                                 if isinstance(v, str)][:8],
+                "scenario_2027": {
+                    "framework": str(scenario.get("framework") or ""),
+                    "sensitivity": str(scenario.get("sensitivity") or ""),
+                    "missing_inputs": [str(v) for v in scenario.get("missing_inputs", [])
+                                       if isinstance(v, str)][:8],
+                },
+            }
+        result[code] = {"code": code, "name": allowed[code], "manual": m, "deep": d}
+    return result

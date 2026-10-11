@@ -11,7 +11,7 @@ import streamlit as st
 
 from public_data import (
     load_public_snapshots, public_company_labels, public_company_record,
-    public_sector_rows, public_stock_rows,
+    public_sector_rows, public_stock_rows, public_memo_records,
 )
 from sector_catalog import SECTORS, SECTOR_BY_ID
 from visual_atlas import VISUAL_ATLAS, local_diagram_for
@@ -40,7 +40,7 @@ div[data-testid="stButton"] button{border-radius:10px;min-height:2.65rem}
 """, unsafe_allow_html=True)
 apply_theme()
 
-PAGES = ("🏠 總覽", "🧭 產業導覽", "📡 產業輪動", "📚 公司基本面")
+PAGES = ("🏠 總覽", "🧭 產業導覽", "📡 產業輪動", "📚 公司基本面", "📝 公司研究 Memo")
 
 
 @st.cache_data(ttl=1800, show_spinner=False)
@@ -52,6 +52,7 @@ def go_to(page, code=None):
     st.session_state.public_page = page
     if code is not None:
         st.session_state.public_company = str(code)
+        st.session_state.public_memo_company = str(code)
 
 
 def fmt(value, suffix="", digits=1):
@@ -65,6 +66,7 @@ report = data.get("latest", {})
 company_names = public_company_labels(data)
 stock_rows = public_stock_rows(data)
 sector_rows = public_sector_rows(data)
+memos = public_memo_records(data)
 if "public_page" not in st.session_state or st.session_state.public_page not in PAGES:
     st.session_state.public_page = PAGES[0]
 if "public_company" not in st.session_state or st.session_state.public_company not in company_names:
@@ -81,7 +83,7 @@ status_line([
     "行情覆蓋 " + str(report.get("price_coverage") or "—"),
     "非即時報價 · 僅供研究",
 ])
-st.caption("公開版不含私人研究筆記、研究假設工作底稿或後台管理權限。")
+st.caption("公開版僅刊登篩選過的公司研究摘要；私人原始研究檔、私人備註及後台管理權限不公開。")
 st.radio("研究頁面", PAGES, key="public_page", horizontal=True)
 page = st.session_state.public_page
 
@@ -91,7 +93,7 @@ def public_overview():
     a, b, c = st.columns(3)
     a.metric("有行情公司", len(stock_rows))
     b.metric("追蹤產業", len(sector_rows))
-    c.metric("產業教學主題", len(SECTORS))
+    c.metric("公司研究 Memo", len(memos))
     if not sector_rows:
         st.info("尚未取得最新市場掃描；產業導覽仍可使用。")
     else:
@@ -217,7 +219,7 @@ def public_rotation():
 def public_fundamentals():
     section_heading("公司公開基本面", label="COMPANY FUNDAMENTALS",
                     description="僅展示官方登錄、申報月營收與已公布歷史財報。")
-    st.caption("僅展示官方公司資訊、已申報月營收及已公布季度財務資料；不含私人分析 Memo。")
+    st.caption("財務指標取自公開財報；研究假設另見「📝 公司研究 Memo」，兩者不得混為一談。")
     if not company_names:
         st.info("公司清單尚未同步。")
         return
@@ -267,6 +269,86 @@ def public_fundamentals():
             st.link_button(label, url)
     if code in ("6456", "7873"):
         st.caption("此標的目前為產業研究連結，不代表已納入上述行情與季度財報同步宇宙。")
+    if code in memos:
+        st.button("📝 閱讀這家公司的研究 Memo →", key="fundamental_to_memo",
+                  on_click=go_to, args=(PAGES[4], code), use_container_width=True)
+
+
+def public_memo_page():
+    section_heading("公司研究 Memo", label="RESEARCH NOTES",
+                    description="原始研究工作台整理出的可公開摘要：研究論點、瓶頸、反證與 2027 EPS 驗證方向。")
+    if not memos:
+        st.info("尚未發布任何公司研究摘要；請等待研究發布流程。")
+        return
+    a, b, c = st.columns(3)
+    a.metric("涵蓋公司", len(memos))
+    b.metric("深度研究提綱", sum(bool(item.get("deep")) for item in memos.values()))
+    c.metric("人工研究筆記", sum(bool(item.get("manual")) for item in memos.values()))
+    meta = data.get("memos") or {}
+    st.caption("研究提綱日期：" + str(meta.get("prepared_on") or "未註明") +
+               " · 不是自動更新的券商共識或正式 EPS 預測")
+    st.info("以下為研究假設與待查證問題，不代表已證實的公司訂單、營收占比、客戶或 2027 年 EPS。")
+
+    if "public_memo_company" not in st.session_state or st.session_state.public_memo_company not in memos:
+        previous = st.session_state.get("public_company")
+        st.session_state.public_memo_company = previous if previous in memos else next(iter(memos))
+    code = st.selectbox("搜尋公司代號或名稱", list(memos), key="public_memo_company",
+                        format_func=lambda key: key + " · " + memos[key]["name"])
+    entry = memos[code]
+    section_heading(entry["name"] + " · " + code, label="COMPANY RESEARCH")
+    st.caption("資料分類：可公開研究摘要 · 非公司公告或券商報告")
+    manual = entry.get("manual")
+    deep = entry.get("deep")
+    if deep:
+        info_card("RESEARCH THESIS", "研究定位",
+                  deep.get("research_position") or "仍待建立完整研究論點", tone="primary")
+        first, second = st.columns(2, gap="medium")
+        with first:
+            info_card("EARNINGS ENGINE", "獲利成長假設",
+                      deep.get("earnings_engine") or "待補齊")
+            info_card("KEY KPI", "核心追蹤指標",
+                      deep.get("key_metric_focus") or "待補齊")
+        with second:
+            info_card("BOTTLENECK", "主要瓶頸",
+                      deep.get("potential_bottleneck") or "待補齊")
+            info_card("BEAR CASE", "風險與反證",
+                      deep.get("bear_case") or "待補齊")
+        thesis, verify = st.tabs(["2027 EPS · 情境思考", "待查證清單"])
+        with thesis:
+            scenario = deep.get("scenario_2027") or {}
+            st.markdown("#### 獲利橋接邏輯")
+            st.write(scenario.get("framework") or "未建立量化模型")
+            st.markdown("#### 敏感度與關鍵變數")
+            st.write(scenario.get("sensitivity") or "缺乏可查證的輸入")
+            st.markdown("#### 尚缺資料")
+            for value in scenario.get("missing_inputs", []):
+                st.write("• " + value)
+        with verify:
+            for question in deep.get("verification", []):
+                st.write("☐ " + question)
+            if deep.get("source_qualification"):
+                st.caption(deep["source_qualification"])
+        st.caption("研究提綱整理日期：" + str(deep.get("prepared_on") or "未註明"))
+    if manual:
+        with st.expander("📒 人工研究筆記", expanded=not bool(deep)):
+            for title, key in (("主要業務", "business"), ("投資論點", "thesis"),
+                               ("觀察催化劑", "catalyst"), ("主要風險", "risk"),
+                               ("確信程度與限制", "confidence")):
+                if manual.get(key):
+                    st.markdown("**" + title + "**")
+                    st.write(manual[key])
+            if manual.get("questions"):
+                st.markdown("**優先驗證的問題**")
+                for question in manual["questions"]:
+                    st.write("• " + question)
+    left, right = st.columns(2)
+    with left:
+        st.button("查看公司已公布財報 →", key="memo_to_fundamentals",
+                  on_click=go_to, args=(PAGES[3], code), use_container_width=True)
+    with right:
+        st.link_button("公開資訊觀測站 ↗", "https://mops.twse.com.tw/",
+                       use_container_width=True)
+    st.caption("研究來源為原創分析與查證方向；不含付費券商報告原文。完整原始研究檔仍只存放於私人工作台。")
 
 
 if page == PAGES[0]:
@@ -275,8 +357,10 @@ elif page == PAGES[1]:
     public_explorer()
 elif page == PAGES[2]:
     public_rotation()
-else:
+elif page == PAGES[3]:
     public_fundamentals()
+else:
+    public_memo_page()
 
 st.markdown("""<div class="public-credit">
 SECTOR RADAR · DESIGNED BY C<br>
