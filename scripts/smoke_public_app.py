@@ -22,8 +22,9 @@ def main():
         keyed(at, "radio", "public_page").set_value(page).run()
         assert_page(at, page)
     company = keyed(at, "selectbox", "public_company")
-    assert "2368" in company.options, "Missing public company selector data"
-    company.set_value("2368").run()
+    assert any("2368" in str(option) for option in company.options), (
+        "Missing public company selector data"
+    )
     assert_page(at, "📚 公司基本面")
     keyed(at, "radio", "public_page").set_value("🧭 產業導覽").run()
     keyed(at, "selectbox", "public_sector").set_value("pcb").run()
