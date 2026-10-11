@@ -21,6 +21,8 @@ def main():
     for page in ("🧭 產業導覽", "📡 產業輪動", "📚 公司基本面", "📝 公司研究 Memo"):
         keyed(at, "radio", "public_page").set_value(page).run()
         assert_page(at, page)
+    keyed(at, "radio", "public_page").set_value("📚 公司基本面").run()
+    assert_page(at, "📚 公司基本面")
     company = keyed(at, "selectbox", "public_company")
     assert any("2368" in str(option) for option in company.options), (
         "Missing public company selector data"
@@ -30,7 +32,8 @@ def main():
     keyed(at, "selectbox", "public_sector").set_value("pcb").run()
     assert_page(at, "🧭 產業導覽")
     keyed(at, "radio", "public_page").set_value("📝 公司研究 Memo").run()
-    keyed(at, "selectbox", "public_memo_company").set_value("2368").run()
+    memo = keyed(at, "selectbox", "public_memo_company")
+    assert any("2368" in str(option) for option in memo.options), "Company Memo missing"
     assert_page(at, "📝 公司研究 Memo")
     print("Public Sector Radar: all five pages, company and industry navigation passed")
 
