@@ -21,3 +21,5 @@ jobs:
         run: python -m compileall -q public_app.py public_data.py sector_catalog.py visual_atlas.py ui_theme.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Offline public app smoke
+        run: python scripts/smoke_public_app.py
